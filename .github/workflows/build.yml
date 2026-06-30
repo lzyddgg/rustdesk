@@ -1,0 +1,41 @@
+name: Build RustDesk patched dylib
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: macos-13
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: Check for rustup target
+        run: rustup show
+
+      - name: Install vcpkg and deps (nasm, ffmpeg)
+        run: |
+          brew install nasm
+          git clone https://github.com/microsoft/vcpkg /tmp/vcpkg
+          /tmp/vcpkg/bootstrap-vcpkg.sh -disableMetrics
+          /tmp/vcpkg/vcpkg install ffmpeg --triplet x64-osx
+
+      - name: Build
+        run: |
+          export VCPKG_ROOT=/tmp/vcpkg
+          cargo build --features flutter,hwcodec --release
+
+      - name: Upload dylib
+        uses: actions/upload-artifact@v4
+        with:
+          name: liblibrustdesk.dylib
+          path: target/release/liblibrustdesk.dylib
+
+      - name: Verify artifact exists
+        run: ls -lh target/release/liblibrustdesk.dylib
