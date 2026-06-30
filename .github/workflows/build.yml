@@ -26,7 +26,7 @@ jobs:
           /tmp/vcpkg/bootstrap-vcpkg.sh -disableMetrics
           # Disable audiotoolbox in ffmpeg to avoid Dart VM symbol conflict
           sed -i '' 's/--enable-audiotoolbox/--disable-audiotoolbox/' /tmp/vcpkg/ports/ffmpeg/portfile.cmake
-          /tmp/vcpkg/vcpkg install ffmpeg --triplet x64-osx --no-manifest
+          /tmp/vcpkg/vcpkg install ffmpeg --triplet x64-osx --classic
 
       - name: Build
         run: |
