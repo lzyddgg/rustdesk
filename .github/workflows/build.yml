@@ -3,7 +3,7 @@ name: Build RustDesk patched dylib
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -24,6 +24,8 @@ jobs:
           brew install nasm
           git clone https://github.com/microsoft/vcpkg /tmp/vcpkg
           /tmp/vcpkg/bootstrap-vcpkg.sh -disableMetrics
+          # Disable audiotoolbox in ffmpeg to avoid Dart VM symbol conflict
+          sed -i '' 's/--enable-audiotoolbox/--disable-audiotoolbox/' /tmp/vcpkg/ports/ffmpeg/portfile.cmake
           /tmp/vcpkg/vcpkg install ffmpeg --triplet x64-osx
 
       - name: Build
