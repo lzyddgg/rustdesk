@@ -30,6 +30,8 @@ jobs:
           sed -i '' 's/--enable-audiotoolbox/--disable-audiotoolbox/' /tmp/vcpkg/ports/ffmpeg/portfile.cmake
           /tmp/vcpkg/vcpkg add port ffmpeg
           /tmp/vcpkg/vcpkg install
+          # Fix path mismatch: manifest mode installs to repo_root/vcpkg_installed/
+          ln -sf "$(pwd)/vcpkg_installed" /tmp/vcpkg/installed
 
       - name: Build
         run: |
