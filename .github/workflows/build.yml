@@ -26,6 +26,7 @@ jobs:
           # aom rejects NASM 3.x on current macOS runners; pin a compatible 2.16.x binary.
           curl -L -o /tmp/nasm.zip https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/macosx/nasm-2.16.03-macosx.zip
           unzip -q /tmp/nasm.zip -d /tmp
+          export PATH="/tmp/nasm-2.16.03:$PATH"
           echo "/tmp/nasm-2.16.03" >> "$GITHUB_PATH"
           /tmp/nasm-2.16.03/nasm -v
           git clone https://github.com/microsoft/vcpkg /tmp/vcpkg
