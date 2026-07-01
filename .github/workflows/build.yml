@@ -23,7 +23,11 @@ jobs:
 
       - name: Install vcpkg and deps (nasm, ffmpeg)
         run: |
-          # Let vcpkg acquire a compatible NASM version for aom/libvpx/ffmpeg.
+          # aom rejects NASM 3.x on current macOS runners; pin a compatible 2.16.x binary.
+          curl -L -o /tmp/nasm.zip https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/macosx/nasm-2.16.03-macosx.zip
+          unzip -q /tmp/nasm.zip -d /tmp
+          echo "/tmp/nasm-2.16.03" >> "$GITHUB_PATH"
+          /tmp/nasm-2.16.03/nasm -v
           git clone https://github.com/microsoft/vcpkg /tmp/vcpkg
           /tmp/vcpkg/bootstrap-vcpkg.sh -disableMetrics
           # Disable audiotoolbox in ffmpeg to avoid Dart VM symbol conflict
