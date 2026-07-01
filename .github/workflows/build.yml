@@ -21,6 +21,24 @@ jobs:
       - name: Check for rustup target
         run: rustup show
 
+      - name: Install Flutter SDK and generate FRB bridge
+        run: |
+          git clone https://github.com/flutter/flutter.git --depth 1 -b stable /tmp/flutter
+          export PATH="/tmp/flutter/bin:$PATH"
+          echo "/tmp/flutter/bin" >> "$GITHUB_PATH"
+          flutter --version
+          pushd flutter
+          flutter pub get
+          popd
+          cargo install flutter_rust_bridge_codegen --version 1.80.1 --features uuid --locked
+          ~/.cargo/bin/flutter_rust_bridge_codegen \
+            --rust-input ./src/flutter_ffi.rs \
+            --dart-output ./flutter/lib/generated_bridge.dart \
+            --c-output ./flutter/macos/Runner/bridge_generated.h \
+            --rust-output ./src/bridge_generated.rs \
+            --dart-root ./flutter \
+            --no-build-runner
+
       - name: Install vcpkg and deps (nasm, ffmpeg)
         run: |
           # aom rejects NASM 3.x on current macOS runners; pin a compatible 2.16.x binary.
