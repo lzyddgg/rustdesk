@@ -23,9 +23,7 @@ jobs:
 
       - name: Install vcpkg and deps (nasm, ffmpeg)
         run: |
-          # macos-26-intel currently ships with an untrusted aws/tap that breaks brew install.
-          brew untap aws/tap || true
-          brew install nasm
+          # Let vcpkg acquire a compatible NASM version for aom/libvpx/ffmpeg.
           git clone https://github.com/microsoft/vcpkg /tmp/vcpkg
           /tmp/vcpkg/bootstrap-vcpkg.sh -disableMetrics
           # Disable audiotoolbox in ffmpeg to avoid Dart VM symbol conflict
