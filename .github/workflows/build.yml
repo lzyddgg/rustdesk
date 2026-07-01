@@ -23,6 +23,8 @@ jobs:
 
       - name: Install vcpkg and deps (nasm, ffmpeg)
         run: |
+          # macos-26-intel currently ships with an untrusted aws/tap that breaks brew install.
+          brew untap aws/tap || true
           brew install nasm
           git clone https://github.com/microsoft/vcpkg /tmp/vcpkg
           /tmp/vcpkg/bootstrap-vcpkg.sh -disableMetrics
